@@ -187,7 +187,7 @@ db.exec(`
     CREATE TABLE IF NOT EXISTS subreddits (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
-    background TEXT 
+    background TEXT DEFAULT "https://png.pngtree.com/thumb_back/fh260/back_our/20190620/ourmid/pngtree-air-conditioning-fan-poster-background-material-image_145338.jpg"
     );
 
     CREATE TABLE IF NOT EXISTS userSubreddits (
@@ -221,8 +221,8 @@ db.exec(`
     CREATE TABLE IF NOT EXISTS comments (
     id INTEGER PRIMARY KEY,
     body TEXT NOT NULL,
-    upVotes INTEGER,
-    downVotes INTEGER,
+    upVotes INTEGER DEFAULT 0,
+    downVotes INTEGER DEFAULT 0,
     createdDate TEXT NOT NULL,
     userId INTEGER NOT NULL,
     postId INTEGER NOT NULL,
