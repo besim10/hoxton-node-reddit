@@ -17,8 +17,12 @@ const db = new Database("./data.db", {
 const getAllUsers = db.prepare(`
 SELECT * from users;
 `);
+
 const getUserById = db.prepare(`
 SELECT * from users WHERE id = ?;
+`);
+const getPostsByUserId = db.prepare(`
+SELECT * from posts WHERE userId = ?
 `);
 const getAllComments = db.prepare(`
 SELECT * from comments;
@@ -49,6 +53,10 @@ app.get("/", (req, res) => {
 
 app.get("/users", (req, res) => {
   const users = getAllUsers.all();
+  for (const user of users) {
+    const posts = getPostsByUserId.all(user.id);
+    user.posts = posts;
+  }
   res.send(users);
 });
 app.get("/users/:id", (req, res) => {
@@ -75,12 +83,19 @@ app.get("/comments/:id", (req, res) => {
 });
 app.get("/posts", (req, res) => {
   const posts = getAllPosts.all();
+
+  for (const post of posts) {
+    const user = getUserById.get(post.userId);
+    post.postedByUser = user;
+  }
   res.send(posts);
 });
 app.get("/posts/:id", (req, res) => {
   const id = req.params.id;
   const post = getPostById.get(id);
   if (post) {
+    const user = getUserById.get(post.userId);
+    post.postedByUser = user;
     res.send(post);
   } else {
     res.send({ error: "Post doesnt exists" });
